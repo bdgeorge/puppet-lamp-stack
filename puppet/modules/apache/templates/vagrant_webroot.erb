@@ -1,0 +1,10 @@
+<VirtualHost *:80>
+    ServerName <%= @domain %>
+    DocumentRoot /vagrant/web
+    <Directory /vagrant/web>
+        DirectoryIndex index.php index.html
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+    </Directory>
+</VirtualHost>

@@ -21,4 +21,9 @@ class mysql {
     command => "mysqladmin -uroot password $mysqlpw",
     require => Service["mysql"],
   }
+
+  mysqldb { dev:
+    user => "dev",
+    password => "dev"
+    }
 }

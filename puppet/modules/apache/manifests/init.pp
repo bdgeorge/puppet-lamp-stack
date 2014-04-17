@@ -6,10 +6,17 @@ class apache {
     require => Exec["apt-get update"]
   }
 
-  # ensures that mode_rewrite is loaded and modifies the default configuration file
+  # ensures that mod_rewrite is loaded and modifies the default configuration file
   file { "/etc/apache2/mods-enabled/rewrite.load":
     ensure => link,
     target => "/etc/apache2/mods-available/rewrite.load",
+    require => Package["apache2"]
+  }
+
+  # ensures that mod_actions is loaded and modifies the default configuration file
+  file { "/etc/apache2/mods-enabled/actions.load":
+    ensure => link,
+    target => "/etc/apache2/mods-available/actions.load",
     require => Package["apache2"]
   }
 
@@ -26,7 +33,7 @@ class apache {
   # create apache config from main vagrant manifests
   file { "/etc/apache2/sites-available/vagrant_webroot":
     ensure => present,
-    source => "/vagrant/manifests/vagrant_webroot",
+    content => template('apache/vagrant_webroot.erb'),
     require => Package["apache2"],
   }
 
@@ -43,6 +50,7 @@ class apache {
     ensure => running,
     require => Package["apache2"],
     subscribe => [
+      File["/etc/apache2/mods-enabled/actions.load"],
       File["/etc/apache2/mods-enabled/rewrite.load"],
       File["/etc/apache2/sites-available/vagrant_webroot"]
     ],
