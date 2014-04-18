@@ -16,7 +16,8 @@ class php {
 
   package { $packages:
     ensure => present,
-    require => Exec["apt-get update"]
+    require => Exec["apt-get update"],
+    notify => Service["php5-fpm"],
   }
 
   # create php-fpm config from main vagrant manifests
@@ -33,12 +34,12 @@ class php {
     require => Package["php5-fpm", "apache2"],
   }
 
-  # All the extensions are loaded in the wrong folder, so link it to the right one
-  # TODO: This needs to happen before any of the packages are added
-
-  file { "/etc/php5/mods-available":
-    ensure => link,
-    target => "/etc/php5/conf.d",
-    require => Package["php5"]
+  service { 'php5-fpm':
+    ensure => running,
+    enable => true,
+    hasrestart => true,
+    hasstatus   => true,
+    restart => "/etc/init.d/php5-fpm restart",
+    require => Package['php5-fpm']
   }
 }
