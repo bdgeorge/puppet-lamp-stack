@@ -11,3 +11,6 @@ include apache
 include php
 include mysql
 
+host { $domain:
+    ip => '127.0.0.1',
+}

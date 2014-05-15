@@ -42,4 +42,12 @@ class php {
     restart => "/etc/init.d/php5-fpm restart",
     require => Package['php5-fpm']
   }
+
+  # Set up some customised php.ini values
+  file {'/etc/php5/fpm/conf.d/php_fpm.ini':
+    ensure => present,
+    content => template('php/fpm/conf.d/php5-fpm.ini.erb'),
+    require => Package["php5-fpm"],
+    notify => Service["php5-fpm"],
+  }
 }
